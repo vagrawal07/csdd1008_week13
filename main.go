@@ -2,10 +2,17 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"net/http"
 	"os"
-	"strconv"
+	"time"
 )
+
+func randomColor() string {
+	colors := []string{"#ffcccc", "#ccffcc", "#ccccff", "#ffffcc", "#ccffff", "#ffccff"}
+	rand.Seed(time.Now().UnixNano())
+	return colors[rand.Intn(len(colors))]
+}
 
 func hostnameHandler(w http.ResponseWriter, r *http.Request) {
 	hostname, err := os.Hostname()
@@ -14,13 +21,7 @@ func hostnameHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	colors := []string{"#ffcccc", "#ccffcc", "#ccccff"}
-	instanceNumStr := os.Getenv("INSTANCE_NUM")
-	instanceNum, err := strconv.Atoi(instanceNumStr)
-	if err != nil || instanceNum < 0 || instanceNum >= len(colors) {
-		instanceNum = 0 // default to the first color if there's an error or invalid instance number
-	}
-	bgColor := colors[instanceNum]
+	bgColor := randomColor()
 
 	// HTML content with background color
 	htmlContent := `
